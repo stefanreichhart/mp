@@ -18,7 +18,7 @@ public class SwaggerConfiguration {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(new ApiInfoBuilder().build())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.measurementpointslocal.api.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.mp.api.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }
