@@ -1,0 +1,13 @@
+<p>
+  mvp works!
+</p>
+
+<h2>Criterias</h2>
+<ul *ngFor="let criteria of criterias">
+  <li>{{criteria.id}} / {{criteria.name}}</li>
+</ul>
+
+<h2>Measurements</h2>
+<ul *ngFor="let measurement of measurements">
+  <li>{{measurement.id}} / {{measurement.rating}} / {{getCriteria(measurement.criteria).name}}</li>
+</ul>
