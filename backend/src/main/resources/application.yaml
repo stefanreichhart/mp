@@ -28,8 +28,8 @@ spring:
   profiles: local
   datasource:
     url: jdbc:postgresql://localhost:5432/measurement-points
-    username: user
-    password: user
+    username:
+    password:
 
 ---
 
