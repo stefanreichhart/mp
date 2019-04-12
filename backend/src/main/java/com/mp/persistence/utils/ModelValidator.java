@@ -1,4 +1,4 @@
-package com.mp.persistence.model;
+package com.mp.persistence.utils;
 
 import org.apache.commons.lang3.StringUtils;
 

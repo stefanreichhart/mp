@@ -36,7 +36,8 @@ public class PollService {
         newPoll.setDescription(dto.getDescription());
         newPoll.setValidFrom(dto.getValidFrom());
         newPoll.setValidTo(dto.getValidTo());
-        newPoll.setCriterias(newCriterias(dto.getCriterias()));
+        // TODO fix this
+        //newPoll.setCriterias(newCriterias(dto.getCriterias()));
         return pollRepository.save(newPoll);
     }
 

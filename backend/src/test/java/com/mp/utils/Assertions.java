@@ -33,6 +33,7 @@ public final class Assertions {
         assertNotNull(actual);
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getName(), actual.getName());
+        assertEquals(expected.getCreated(), actual.getCreated());
     }
 
     public static void assertExistingPollEquals(Poll expected, Optional<Poll> actual) {

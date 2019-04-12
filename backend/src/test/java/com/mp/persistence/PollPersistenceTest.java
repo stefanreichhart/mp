@@ -5,6 +5,7 @@ import com.mp.persistence.model.Criteria;
 import com.mp.persistence.model.Poll;
 import com.mp.persistence.repository.CriteriaRepository;
 import com.mp.persistence.repository.PollRepository;
+import com.mp.persistence.utils.ModelFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

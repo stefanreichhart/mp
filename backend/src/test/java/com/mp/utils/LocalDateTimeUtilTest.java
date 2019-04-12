@@ -9,8 +9,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LocalDateTimeUtilTest {
 
@@ -26,6 +25,19 @@ public class LocalDateTimeUtilTest {
     })
     public void fromString(String source) {
         assertNotNull(LocalDateTimeUtil.fromString(source));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "null",
+            "",
+            " ",
+            "2019/11/22 23:59",
+            "11-22-2019",
+            "11/22/2019",
+    })
+    public void fromStringReturnNull(String source) {
+        assertNull(LocalDateTimeUtil.fromString(source));
     }
 
     @ParameterizedTest(name = "{index} => sql={0}, localDateTime={1}")

@@ -1,8 +1,8 @@
 package com.mp.persistence.repository;
 
 import com.mp.MeasurementPointsLocalApplication;
-import com.mp.persistence.ModelFactory;
 import com.mp.persistence.model.Person;
+import com.mp.persistence.utils.ModelFactory;
 import com.mp.utils.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

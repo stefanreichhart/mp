@@ -1,5 +1,6 @@
 package com.mp.persistence.model;
 
+import com.mp.persistence.utils.ModelValidator;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -65,19 +66,11 @@ public class Poll {
     }
 
     public List<Criteria> getCriterias() {
-        return criterias;
-    }
-
-    public void setCriterias(List<Criteria> criterias) {
-        this.criterias = criterias;
+        return criterias != null ? new ArrayList<>(criterias) : new ArrayList<>();
     }
 
     public List<Measurement> getMeasurements() {
         return measurements != null ? new ArrayList<>(measurements) : new ArrayList<>();
-    }
-
-    public void setMeasurements(List<Measurement> measurements) {
-        this.measurements = measurements;
     }
 
     public LocalDateTime getValidTo() {
@@ -102,16 +95,8 @@ public class Poll {
         return created;
     }
 
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
-    }
-
     public LocalDateTime getUpdated() {
         return updated;
-    }
-
-    public void setUpdated(LocalDateTime updated) {
-        this.updated = updated;
     }
 
     public void addCriteria(Criteria criteria) {

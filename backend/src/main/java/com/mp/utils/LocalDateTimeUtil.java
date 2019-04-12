@@ -20,6 +20,11 @@ public class LocalDateTimeUtil {
             "yyyy-MM-dd HH"
     };
 
+    private static final String[] DATE_PATTERNS = {
+            "yyyy-MM-dd",
+            "yyyy/MM/dd"
+    };
+
     public static LocalDateTime fromString(String source) {
         for (String pattern : DATE_TIME_PATTERNS) {
             try {
@@ -28,11 +33,13 @@ public class LocalDateTimeUtil {
                 // ignore, continue
             }
         }
-        try {
-            LocalDate localDate = LocalDate.parse(source, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            return LocalDateTime.of(localDate, LocalTime.of(0,0, 0, 0));
-        } catch (DateTimeParseException exception) {
-            // ignore, continue
+        for (String pattern : DATE_PATTERNS) {
+            try {
+                LocalDate localDate = LocalDate.parse(source, DateTimeFormatter.ofPattern(pattern));
+                return LocalDateTime.of(localDate, LocalTime.of(0,0, 0, 0));
+            } catch (DateTimeParseException exception) {
+                // ignore, continue
+            }
         }
         return null;
     }

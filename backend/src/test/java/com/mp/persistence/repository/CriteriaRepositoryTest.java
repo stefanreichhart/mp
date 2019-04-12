@@ -1,9 +1,9 @@
 package com.mp.persistence.repository;
 
 import com.mp.MeasurementPointsLocalApplication;
-import com.mp.persistence.ModelFactory;
 import com.mp.persistence.model.Criteria;
 import com.mp.persistence.model.Poll;
+import com.mp.persistence.utils.ModelFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

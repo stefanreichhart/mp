@@ -54,16 +54,9 @@ public class Criteria {
         return created;
     }
 
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
-    }
-
     public LocalDateTime getUpdated() {
         return updated;
     }
 
-    public void setUpdated(LocalDateTime updated) {
-        this.updated = updated;
-    }
 
 }

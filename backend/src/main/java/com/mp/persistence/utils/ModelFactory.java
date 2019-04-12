@@ -1,4 +1,4 @@
-package com.mp.persistence;
+package com.mp.persistence.utils;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.mp.persistence.model.Criteria;
