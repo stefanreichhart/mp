@@ -1,18 +1,20 @@
 package com.mp.persistence.repository;
 
 import com.mp.MeasurementPointsLocalApplication;
-import com.mp.persistence.PersonPersistence;
+import com.mp.persistence.ModelFactory;
 import com.mp.persistence.model.Person;
+import com.mp.utils.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import javax.transaction.Transactional;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,78 +25,87 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PersonRepositoryTest {
 
     @Autowired
-    private PersonPersistence persistence;
+    private PersonRepository personRepository;
 
     @Autowired
-    private PersonRepository repository;
+    private ModelFactory modelFactory;
 
     @Test
-    public void repository() {
-        repository.findAll();
-        repository.count();
-        repository.deleteAll();
-    }
-
-    @Test
-    public void findAll() {
-        List<Person> persons = repository.findAll();
-        assertNotNull(persons);
+    public void basics() {
+        personRepository.findAll();
+        personRepository.count();
+        personRepository.deleteAll();
     }
 
     @Test
-    public void find_absent() {
-        String name = TestingUtils.getRandomUniqueName();
-        Optional<Person> byName = repository.findByName(name);
-        assertFalse(byName.isPresent());
+    public void savePersonThrowsException() {
+        assertThrows(DataIntegrityViolationException.class, () -> personRepository.saveAndFlush(new Person()));
     }
 
     @Test
-    public void create() {
-        Person savedPerson = persistence.create();
-        assertExists(savedPerson);
+    public void savePersonWithNullNameThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> createAndSavePerson(null));
     }
 
     @Test
-    public void find_create_delete() {
-        String name = TestingUtils.getRandomUniqueName();
-        Optional<Person> byName = repository.findByName(name);
-        assertFalse(byName.isPresent());
-
-        Person savedPerson = persistence.create(name);
-        assertExists(savedPerson);
-
-        byName = repository.findByName(name);
-        assertFind(savedPerson, byName);
-
-        repository.delete(byName.get());
-        denyExists(byName.get());
+    public void savePersonWithEmptyNameThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> createAndSavePerson(""));
     }
 
     @Test
-    public void prevent_duplicates() {
-        Person person = persistence.create();
-        assertExists(person);
-        assertThrows(Exception.class, () -> persistence.create(person.getName()));
+    public void savePersonWithBlankNameThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> createAndSavePerson("    "));
     }
 
-    public void assertFind(Person expected, Optional<Person> actual) {
-        assertNotNull(actual);
-        assertTrue(actual.isPresent());
-        assertNotNull(actual.get());
-        assertEquals(expected, actual.get());
+    @Test
+    public void savePerson() {
+        Person saved = createAndSavePerson("name");
+        Assertions.assertSavedPerson(saved);
+        assertEquals("name", saved.getName());
     }
 
-    public void assertExists(Person person) {
-        assertNotNull(person);
-        Optional<Person> byId = repository.findById(person.getId());
-        assertTrue(byId.isPresent());
-        assertEquals(person, byId.get());
+    @Test
+    public void saveDuplicatePersonThrowsException() {
+        Person saved = createAndSavePerson("name");
+        Assertions.assertSavedPerson(saved);
+        assertThrows(DataIntegrityViolationException.class, () -> createAndSavePerson("name"));
     }
 
-    public void denyExists(Person person) {
-        assertNotNull(person);
-        Optional<Person> byId = repository.findById(person.getId());
-        assertFalse(byId.isPresent());
+    @Test
+    public void findByIdNonExistingPerson() {
+        Optional<Person> notFound = personRepository.findById(UUID.randomUUID());
+        assertTrue(notFound.isEmpty());
+    }
+
+    @Test
+    public void findByNameNonExistingPerson() {
+        Optional<Person> notFound = personRepository.findByName(UUID.randomUUID().toString());
+        assertTrue(notFound.isEmpty());
+    }
+
+    @Test
+    public void findById() {
+        Person saved1 = createAndSavePerson("p1");
+        Person saved2 = createAndSavePerson("p2");
+        Person saved3 = createAndSavePerson("p3");
+        Assertions.assertSavedPersonsEquals(saved1, personRepository.findById(saved1.getId()));
+        Assertions.assertSavedPersonsEquals(saved2, personRepository.findById(saved2.getId()));
+        Assertions.assertSavedPersonsEquals(saved3, personRepository.findById(saved3.getId()));
+    }
+
+    @Test
+    public void findByName() {
+        Person saved1 = createAndSavePerson("p1");
+        Person saved2 = createAndSavePerson("p2");
+        Person saved3 = createAndSavePerson("p3");
+        Assertions.assertSavedPersonsEquals(saved1, personRepository.findByName(saved1.getName()));
+        Assertions.assertSavedPersonsEquals(saved2, personRepository.findByName(saved2.getName()));
+        Assertions.assertSavedPersonsEquals(saved3, personRepository.findByName(saved3.getName()));
+    }
+
+    private Person createAndSavePerson(String name) {
+        Person person = modelFactory.createPerson(name);
+        return personRepository.saveAndFlush(person);
     }
 
 }

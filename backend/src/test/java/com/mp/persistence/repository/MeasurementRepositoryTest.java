@@ -52,6 +52,7 @@ public class MeasurementRepositoryTest {
         assertNotNull(measurements);
     }
 
+    // TODO broken due to model changes
     @Test
     public void createAndDelete() {
         Person person = new Person();
@@ -63,13 +64,12 @@ public class MeasurementRepositoryTest {
         Criteria savedCriteria = criteriaRepository.save(criteria);
 
         Measurement measurement = new Measurement();
-        measurement.setComment("comment");
         measurement.setRating(1);
         measurement.setPerson(person);
         measurement.setCriteria(criteria);
 
         Measurement saved = measurementRepository.save(measurement);
-        Optional<Measurement> found = measurementRepository.findById(saved.getId());
+        Optional<Measurement> found = measurementRepository.findByUuid(saved.getId());
         assertTrue(found.isPresent());
         assertEquals(saved, found.get());
 

@@ -1,44 +1,34 @@
 package com.mp.persistence.model;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
-@Table(name = "Measurement")
+@Table(name = "measurement")
 public class Measurement {
 
     @Id
-    @GeneratedValue(generator = "measurement_generator")
-    @SequenceGenerator(
-            name = "measurement_generator",
-            sequenceName = "measurement_sequence",
-            initialValue = 1000
-    )
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     @Column(name = "rating", nullable = false)
-    public Integer rating;
+    private Integer rating;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "criteria_id")
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    public Criteria criteria;
+    private Criteria criteria;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id")
-    @ManyToOne(fetch = FetchType.EAGER, optional = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    public Person person;
+    private Person person;
 
-    @Column(name = "comment")
-    public String comment;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "poll_id")
+    private Poll poll;
 
     @Column(name = "created", nullable = false)
     @CreationTimestamp
@@ -48,7 +38,7 @@ public class Measurement {
     @UpdateTimestamp
     private LocalDateTime updated;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -76,12 +66,12 @@ public class Measurement {
         this.person = person;
     }
 
-    public String getComment() {
-        return comment;
+    public Poll getPoll() {
+        return poll;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setPoll(Poll poll) {
+        this.poll = poll;
     }
 
     public LocalDateTime getCreated() {
@@ -90,33 +80,6 @@ public class Measurement {
 
     public LocalDateTime getUpdated() {
         return updated;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Measurement that = (Measurement) o;
-
-        return new EqualsBuilder()
-                .append(id, that.id)
-                .isEquals();
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(id)
-                .toHashCode();
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append("id", id)
-                .toString();
     }
 
 }

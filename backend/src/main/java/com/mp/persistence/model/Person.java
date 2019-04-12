@@ -1,25 +1,19 @@
 package com.mp.persistence.model;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
-@Table(name = "Person")
+@Table(name = "person")
 public class Person {
 
     @Id
-    @GeneratedValue(generator = "person_generator")
-    @SequenceGenerator(
-            name = "person_generator",
-            sequenceName = "person_sequence",
-            initialValue = 1000)
-    public Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     @Column(name = "name", nullable = false, unique = true)
     public String name;
@@ -32,7 +26,7 @@ public class Person {
     @UpdateTimestamp
     private LocalDateTime updated;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -41,6 +35,7 @@ public class Person {
     }
 
     public void setName(String name) {
+        ModelValidator.requireNotNullNotEmpty(name, "person.name");
         this.name = name;
     }
 
@@ -50,33 +45,6 @@ public class Person {
 
     public LocalDateTime getUpdated() {
         return updated;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Person person = (Person) o;
-
-        return new EqualsBuilder()
-                .append(id, person.id)
-                .isEquals();
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(id)
-                .toHashCode();
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append("id", id)
-                .toString();
     }
 
 }

@@ -1,17 +1,30 @@
 package com.mp.api.dto;
 
-public class MeasurementDtoPush {
+import java.util.UUID;
 
-    private Long criteria;
+public class MeasurementDto {
+
+    private UUID poll;
+
+    private UUID criteria;
+
     private String person;
-    private Integer rating;
-    private String comment;
 
-    public Long getCriteria() {
+    private Integer rating;
+
+    public UUID getPoll() {
+        return poll;
+    }
+
+    public void setPoll(UUID poll) {
+        this.poll = poll;
+    }
+
+    public UUID getCriteria() {
         return criteria;
     }
 
-    public void setCriteria(Long criteria) {
+    public void setCriteria(UUID criteria) {
         this.criteria = criteria;
     }
 
@@ -29,14 +42,6 @@ public class MeasurementDtoPush {
 
     public void setRating(Integer rating) {
         this.rating = rating;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
     }
 
 }
