@@ -1,7 +1,9 @@
 package com.mp.utils;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
@@ -9,29 +11,38 @@ public class LocalDateTimeUtil {
 
     private LocalDateTimeUtil() {}
 
-    private static final String[] PATTERNS = {
+    private static final String[] DATE_TIME_PATTERNS = {
+            "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
             "yyyy-MM-dd HH:mm:ss.SSS",
+            "yyyy-MM-dd'T'HH:mm:ss",
             "yyyy-MM-dd HH:mm:ss",
-            "yyyy-MM-dd HH:mm"
+            "yyyy-MM-dd HH:mm",
+            "yyyy-MM-dd HH"
     };
 
     public static LocalDateTime fromString(String source) {
-        for (String pattern : PATTERNS) {
+        for (String pattern : DATE_TIME_PATTERNS) {
             try {
                 return LocalDateTime.parse(source, DateTimeFormatter.ofPattern(pattern));
             } catch (DateTimeParseException exception) {
                 // ignore, continue
             }
         }
+        try {
+            LocalDate localDate = LocalDate.parse(source, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            return LocalDateTime.of(localDate, LocalTime.of(0,0, 0, 0));
+        } catch (DateTimeParseException exception) {
+            // ignore, continue
+        }
         return null;
     }
 
     public static Timestamp toSqlTemporal(LocalDateTime localDateTime) {
-        return (localDateTime == null ? null : new Timestamp(localDateTime.getYear(), localDateTime.getMonth().getValue(), localDateTime.getDayOfMonth(), localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond(), localDateTime.getNano()));
+        return localDateTime == null ? null : new Timestamp(localDateTime.getYear(), localDateTime.getMonth().getValue()-1, localDateTime.getDayOfMonth(), localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond(), localDateTime.getNano());
     }
 
     public static LocalDateTime fromSqlTemporal(Timestamp sqlDate) {
-        return LocalDateTime.of(sqlDate.getYear(), sqlDate.getMonth(), sqlDate.getDate(), sqlDate.getHours(), sqlDate.getMinutes(), sqlDate.getSeconds(), sqlDate.getNanos());
+        return sqlDate == null ? null : LocalDateTime.of(sqlDate.getYear(), sqlDate.getMonth()+1, sqlDate.getDate(), sqlDate.getHours(), sqlDate.getMinutes(), sqlDate.getSeconds(), sqlDate.getNanos());
     }
 
 }

@@ -1,12 +1,13 @@
-package com.mp.persistence.repository;
+package com.mp.utils;
 
 import java.util.UUID;
 
-public final class TestingUtils {
+public final class Generators {
 
-    private TestingUtils() {}
+    private Generators() {}
 
     public static String getRandomUniqueName() {
         return UUID.randomUUID().toString();
     }
+
 }
