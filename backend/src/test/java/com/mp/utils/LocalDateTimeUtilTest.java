@@ -54,7 +54,7 @@ public class LocalDateTimeUtilTest {
     }
 
     public static Stream<? extends Arguments> getSqlTemporals() {
-        return TestData.getSqlTemporals();
+        return TestData.getLocalDateTimeAndSqlTimestamp();
     }
 
 }

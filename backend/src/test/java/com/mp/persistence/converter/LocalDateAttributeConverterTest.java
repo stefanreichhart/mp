@@ -28,7 +28,7 @@ public class LocalDateAttributeConverterTest {
     }
 
     public static Stream<? extends Arguments> getSqlTemporals() {
-        return TestData.getSqlTemporals();
+        return TestData.getLocalDateTimeAndSqlTimestamp();
     }
 
 }
