@@ -2,6 +2,7 @@ package com.mp.persistence.utils;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.mp.persistence.model.Criteria;
+import com.mp.persistence.model.Measurement;
 import com.mp.persistence.model.Person;
 import com.mp.persistence.model.Poll;
 import org.springframework.stereotype.Component;
@@ -33,7 +34,7 @@ public class ModelFactory {
     }
 
     @VisibleForTesting
-    private Person createPerson() {
+    public Person createPerson() {
         return this.createPerson(UUID.randomUUID().toString());
     }
 
@@ -46,6 +47,25 @@ public class ModelFactory {
     @VisibleForTesting
     public Criteria createCriteria() {
         return this.createCriteria(UUID.randomUUID().toString());
+    }
+
+    public Measurement createMeasurement(Integer rating, Poll poll, Criteria criteria, Person person) {
+        Measurement measurement = new Measurement();
+        measurement.setRating(rating);
+        measurement.setPoll(poll);
+        measurement.setCriteria(criteria);
+        measurement.setPerson(person);
+        return measurement;
+    }
+
+    @VisibleForTesting
+    public Measurement createMeasurement(Integer rating) {
+        return createMeasurement(rating, null, null, null);
+    }
+
+    @VisibleForTesting
+    public Measurement createMeasurement() {
+        return createMeasurement(0);
     }
 
 }

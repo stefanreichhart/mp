@@ -33,9 +33,9 @@ public class PollRepositoryTest {
 
     @Test
     public void basics() {
-        pollRepository.findAll();
-        pollRepository.count();
-        pollRepository.deleteAll();
+        assertDoesNotThrow(() -> pollRepository.findAll());
+        assertDoesNotThrow(() -> pollRepository.count());
+        assertDoesNotThrow(() -> pollRepository.deleteAll());
     }
 
     @Test
@@ -74,7 +74,7 @@ public class PollRepositoryTest {
 
     @Test
     public void findByIdNonExistingPoll() {
-        Optional<Poll> poll = pollRepository.findByUuid(UUID.randomUUID());
+        Optional<Poll> poll = pollRepository.findById(UUID.randomUUID());
         assertTrue(poll.isEmpty());
     }
 
@@ -82,9 +82,9 @@ public class PollRepositoryTest {
     public void findById() {
         Poll saved1 = createAndSavePoll("title", "description", null, null);
         Assertions.assertSavedPoll(saved1);
-        Optional<Poll> poll = pollRepository.findByUuid(saved1.getId());
+        Optional<Poll> poll = pollRepository.findById(saved1.getId());
         assertTrue(poll.isPresent());
-        Assertions.assertSavedPollEquals(saved1, poll.get());
+        Assertions.assertSavedPollEqualsFoundPoll(saved1, poll.get());
     }
 
     private Poll createAndSavePoll(String title, String description, LocalDateTime validFrom, LocalDateTime validTo) {

@@ -11,9 +11,6 @@ import java.util.UUID;
 @Repository
 public interface PersonRepository extends JpaRepository<Person, UUID> {
 
-    @Query("SELECT p FROM Person p WHERE p.id = :id")
-    Optional<Person> findByUuid(UUID id);
-
     @Query("SELECT p FROM Person p WHERE p.name = :name")
     Optional<Person> findByName(String name);
 

@@ -1,5 +1,6 @@
 package com.mp.persistence.model;
 
+import com.mp.persistence.utils.ModelValidator;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -19,7 +20,7 @@ public class Measurement {
     private Integer rating;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "criteria_id")
+    @JoinColumn(name = "criteria_id", nullable = false)
     private Criteria criteria;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -27,7 +28,7 @@ public class Measurement {
     private Person person;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "poll_id")
+    @JoinColumn(name = "poll_id", nullable = false)
     private Poll poll;
 
     @Column(name = "created", nullable = false)
@@ -47,6 +48,7 @@ public class Measurement {
     }
 
     public void setRating(Integer rating) {
+        ModelValidator.requireNotNull(rating, "measurement.rating");
         this.rating = rating;
     }
 

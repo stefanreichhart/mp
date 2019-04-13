@@ -18,9 +18,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.mp.utils.Assertions.assertEmpty;
-import static com.mp.utils.Assertions.assertExistingCriteria;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static com.mp.utils.Assertions.assertSavedCriteriaEqualsFoundCriteria;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = MeasurementPointsLocalApplication.class)
@@ -39,9 +38,9 @@ public class CriteriaRepositoryTest {
 
     @Test
     public void repository() {
-        criteriaRepository.findAll();
-        criteriaRepository.count();
-        criteriaRepository.deleteAll();
+        assertDoesNotThrow(() -> criteriaRepository.findAll());
+        assertDoesNotThrow(() -> criteriaRepository.count());
+        assertDoesNotThrow(() -> criteriaRepository.deleteAll());
     }
 
     @Test
@@ -56,7 +55,6 @@ public class CriteriaRepositoryTest {
         Criteria criteria = modelFactory.createCriteria();
         poll.addCriteria(criteria);
         assertThrows(InvalidDataAccessApiUsageException.class, () -> criteriaRepository.saveAndFlush(criteria));
-        //pollRepository.saveAndFlush(poll);
     }
 
     @Test
@@ -64,18 +62,7 @@ public class CriteriaRepositoryTest {
         Poll poll = modelFactory.createPoll();
         Criteria criteria = modelFactory.createCriteria();
         poll.addCriteria(criteria);
-        pollRepository.saveAndFlush(poll);
-    }
-
-    private Poll createAndSavePollWithCriterias(int count) {
-        Poll poll = modelFactory.createPoll();
-        assertEquals(0, poll.getCriterias().size());
-        for (int i = 1; i <= count; i++) {
-            Criteria criteria = modelFactory.createCriteria();
-            poll.addCriteria(criteria);
-        }
-        assertEquals(count, poll.getCriterias().size());
-        return pollRepository.saveAndFlush(poll);
+        assertDoesNotThrow(() -> pollRepository.saveAndFlush(poll));
     }
 
     @Test
@@ -83,22 +70,33 @@ public class CriteriaRepositoryTest {
         Poll poll4 = createAndSavePollWithCriterias(4);
         assertEquals(4, poll4.getCriterias().size());
         poll4.getCriterias().stream().forEach(criteria -> {
-            Optional<Criteria> found = criteriaRepository.findByUuid(criteria.getId());
-            assertExistingCriteria(criteria, found);
+            Optional<Criteria> found = assertDoesNotThrow(() -> criteriaRepository.findById(criteria.getId()));
+            assertSavedCriteriaEqualsFoundCriteria(criteria, found);
         });
     }
 
     @Test
     public void findByPoll() {
         Poll poll0 = createAndSavePollWithCriterias(0);
-        List<Criteria> criterias0 = criteriaRepository.findByPoll(poll0);
+        List<Criteria> criterias0 = assertDoesNotThrow(() -> criteriaRepository.findByPoll(poll0));
         assertEmpty(criterias0);
         Poll poll2 = createAndSavePollWithCriterias(2);
         Poll poll3 = createAndSavePollWithCriterias(3);
-        List<Criteria> criterias2 = criteriaRepository.findByPoll(poll2);
+        List<Criteria> criterias2 = assertDoesNotThrow(() -> criteriaRepository.findByPoll(poll2));
         assertEquals(2, criterias2.size());
-        List<Criteria> criterias3 = criteriaRepository.findByPoll(poll3);
+        List<Criteria> criterias3 = assertDoesNotThrow(() -> criteriaRepository.findByPoll(poll3));
         assertEquals(3, criterias3.size());
+    }
+
+    private Poll createAndSavePollWithCriterias(int count) {
+        Poll poll = assertDoesNotThrow(() -> modelFactory.createPoll());
+        assertEquals(0, poll.getCriterias().size());
+        for (int i = 1; i <= count; i++) {
+            Criteria criteria = assertDoesNotThrow(() -> modelFactory.createCriteria());
+            assertDoesNotThrow(() -> poll.addCriteria(criteria));
+        }
+        assertEquals(count, poll.getCriterias().size());
+        return assertDoesNotThrow(() -> pollRepository.saveAndFlush(poll));
     }
 
 }

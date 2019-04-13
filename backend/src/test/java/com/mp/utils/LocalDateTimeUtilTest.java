@@ -1,5 +1,6 @@
 package com.mp.utils;
 
+import com.mp.data.TestData;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -52,18 +53,8 @@ public class LocalDateTimeUtilTest {
         assertEquals(expected, LocalDateTimeUtil.fromSqlTemporal(sql));
     }
 
-    private static Stream<? extends Arguments> getSqlTemporals() {
-        return Stream.of(
-                Arguments.of(
-                        new Timestamp(2019, 10, 22, 23, 59, 59, 999999999),
-                        LocalDateTime.of(2019, 11, 22, 23, 59, 59, 999999999)),
-                Arguments.of(
-                        new Timestamp(2018, 0, 3, 5, 4, 1, 34),
-                        LocalDateTime.of(2018, 1, 3, 5, 4, 1, 34)),
-                Arguments.of(
-                        new Timestamp(2022, 11, 30, 23, 0, 0, 1),
-                        LocalDateTime.of(2022, 12, 30, 23, 0, 0, 1))
-        );
+    public static Stream<? extends Arguments> getSqlTemporals() {
+        return TestData.getSqlTemporals();
     }
 
 }

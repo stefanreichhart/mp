@@ -54,7 +54,7 @@ public class PollService {
 
     @Transactional
     public Poll modifyPoll(PollDto dto) {
-        Optional<Poll> poll = pollRepository.findByUuid(dto.getId());
+        Optional<Poll> poll = pollRepository.findById(dto.getId());
         if (poll.isPresent()) {
             return modifyPoll(poll.get(), dto);
         }
@@ -72,17 +72,17 @@ public class PollService {
 
     @Transactional
     public void removePoll(UUID id) {
-        Optional<Poll> poll = pollRepository.findByUuid(id);
+        Optional<Poll> poll = pollRepository.findById(id);
         if (poll.isPresent()) {
             measurementRepository.deleteByPollUuid(id);
-            criteriaRepository.deleteByPollUuid(id);
+            criteriaRepository.deleteByPoll(poll.get());
             pollRepository.deleteByUuid(id);
             //TODO delete obsolete persons;
         }
     }
 
     public Optional<Poll> getPoll(UUID id) {
-        return pollRepository.findByUuid(id);
+        return pollRepository.findById(id);
     }
 
 }

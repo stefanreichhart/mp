@@ -1,5 +1,6 @@
 package com.mp.persistence.model;
 
+import com.mp.persistence.utils.ModelValidator;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -39,6 +40,7 @@ public class Criteria {
     }
 
     public void setName(String name) {
+        ModelValidator.requireNotNullNotEmpty(name, "criteria.name");
         this.name = name;
     }
 

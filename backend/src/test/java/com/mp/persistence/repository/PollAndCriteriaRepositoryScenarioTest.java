@@ -1,10 +1,8 @@
-package com.mp.persistence;
+package com.mp.persistence.repository;
 
 import com.mp.MeasurementPointsLocalApplication;
 import com.mp.persistence.model.Criteria;
 import com.mp.persistence.model.Poll;
-import com.mp.persistence.repository.CriteriaRepository;
-import com.mp.persistence.repository.PollRepository;
 import com.mp.persistence.utils.ModelFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(classes = MeasurementPointsLocalApplication.class)
 @ActiveProfiles("test")
 @Transactional
-public class PollPersistenceTest {
+public class PollAndCriteriaRepositoryScenarioTest {
 
     @Autowired
     private PollRepository pollRepository;
@@ -56,7 +54,7 @@ public class PollPersistenceTest {
         savedCriteria = savedPoll.getCriterias().get(0);
         assertEquals(criteria.getId(), savedCriteria.getId());
         assertSavedPoll(savedCriteria.getPoll());
-        assertSavedPollEquals(savedPoll, savedCriteria.getPoll());
+        assertSavedPollEqualsFoundPoll(savedPoll, savedCriteria.getPoll());
     }
 
     @Test
@@ -67,7 +65,7 @@ public class PollPersistenceTest {
     }
 
     @Test
-    public void addSameCriteriaTwice() {
+    public void addSameCriteriaExpectNoDuplicates() {
         addCriteria();
         savedPoll.addCriteria(savedCriteria);
         savedPoll.addCriteria(criteria);
@@ -104,11 +102,11 @@ public class PollPersistenceTest {
         assertEmpty(savedPoll.getCriterias());
         assertNull(savedCriteria.getPoll());
 
-        Optional<Criteria> existingCriteria = criteriaRepository.findByUuid(savedCriteria.getId());
+        Optional<Criteria> existingCriteria = criteriaRepository.findById(savedCriteria.getId());
         assertTrue(existingCriteria.isEmpty());
 
-        Optional<Poll> existingPoll = pollRepository.findByUuid(savedPoll.getId());
-        assertExistingPollEquals(savedPoll, existingPoll);
+        Optional<Poll> existingPoll = pollRepository.findById(savedPoll.getId());
+        assertSavedPollEqualsFoundPoll(savedPoll, existingPoll);
     }
 
 
@@ -140,9 +138,9 @@ public class PollPersistenceTest {
         assertSavedPoll(savedPoll2);
         assertEmpty(savedPoll2.getCriterias());
 
-        Optional<Criteria> existingCriteria = criteriaRepository.findByUuid(criteria.getId());
+        Optional<Criteria> existingCriteria = criteriaRepository.findById(criteria.getId());
         assertTrue(existingCriteria.isPresent());
-        assertSavedPollEquals(savedPoll, existingCriteria.get().getPoll());
+        assertSavedPollEqualsFoundPoll(savedPoll, existingCriteria.get().getPoll());
     }
 
 }

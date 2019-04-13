@@ -49,7 +49,7 @@ public class MeasurementService {
 
     private Measurement newMeasurement(MeasurementDto dto) {
         Measurement measurement = new Measurement();
-        measurement.setCriteria(criteriaRepository.findByUuid(dto.getCriteria()).get());
+        measurement.setCriteria(criteriaRepository.findById(dto.getCriteria()).get());
         if (!StringUtils.isBlank(dto.getPerson())) {
             measurement.setPerson(personRepository.findByName(dto.getPerson()).orElse(null));
         }
@@ -59,7 +59,7 @@ public class MeasurementService {
 
     @Transactional
     public Measurement modify(UUID id, Integer rating) {
-        Measurement measurement = measurementRepository.findByUuid(id).get();
+        Measurement measurement = measurementRepository.findById(id).get();
         measurement.setRating(rating);
         return measurementRepository.save(measurement);
     }
