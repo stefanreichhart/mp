@@ -1,8 +1,6 @@
 package com.mp.persistence.repository;
 
 import com.mp.MeasurementPointsLocalApplication;
-import com.mp.persistence.CriteriaPersistence;
-import com.mp.persistence.PersonPersistence;
 import com.mp.persistence.model.Criteria;
 import com.mp.persistence.model.Measurement;
 import com.mp.persistence.model.Person;
@@ -42,12 +40,6 @@ public class MeasurementRepositoryTest {
 
     @Autowired
     public CriteriaRepository criteriaRepository;
-
-    @Autowired
-    public PersonPersistence personPersistence;
-
-    @Autowired
-    public CriteriaPersistence criteriaPersistence;
 
     @Autowired
     public ModelFactory modelFactory;
